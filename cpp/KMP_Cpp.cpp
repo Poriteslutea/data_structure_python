@@ -7,21 +7,26 @@ using namespace std;  //聲明一個命名的空間
 
 //參考：https://www.cnblogs.com/c-cloud/p/3224788.html
 
-// KMP中的get_next, 回傳子字串s的next陣列，這個next是指子字串每一位置的最大相同前後綴的長度
+// KMP中的get_next, 回傳子字串s的next陣列，這個next是指子字串與主字串比對到子字串中第q個數然後發現不匹配時，i要回溯到哪個位置繼續比對
 void get_next(const char P[], int next[])
 {
       int m = strlen(P);   //要找的子字串的長度
-      int q,k;  //q:子字串的下標，k:最大前後綴的長度  
+      int q,k;  //q:子字串遍歷的下標，k:在子字串中尋找跟開頭相同字元串的下標（會在q之前）  
       next[0] = 0;    //next陣列的第一個都是0，第一個字的最大前後綴長度給0
    
-      for(k=0, q=1;q < m;++q){  //從子字串第二個字元開始，依次計算每一個字符可以對應的next值
+      for(k=0, q=1;q < m;q++){  //從子字串第二個字元開始，依序遍歷子字串，找子字串中有沒有相同前後綴字串
          while(k>0 && P[k]!=P[q]) {
-            k = next[k-1];         //前一步有找到相同的值，並且有前後綴長度相同的字串
+            printf("%d\n", k); 
+            k = next[k-1]; 
+            printf("here is k:"); 
+            printf("%d\n", k);       //子字串之後有找到與開頭相同的值，但後續匹配又不相同
+            printf("here is q:"); 
+            printf("%d\n", q);      
          }
-         if(P[k]==P[q]){   //如果兩者相等，最大相同前後綴長度加一
+         if(P[k]==P[q]){   //當q遍歷到與開頭字母（k的位置）一樣的字時，k就會移去下一個字母
             k++;
          } 
-         next[q] = k;
+         next[q] = k;  //
       }
 }
 
@@ -49,10 +54,15 @@ int  kmp(const char T[],const char P[], int next[]){
 int main(){
    int i;
    int next[20] = {0};
-   char T[] = "aaaaaaaaaaaabbbaaaaaaaab";
-   char P[] = "aaabbbaaa";
+   char T[] = "aaaaapabcdexaababaaababbaaaaaaaab";
+   char P[] = "abcdex";
    printf("%s\n", T);
    printf("%s\n", P );
+   get_next(P, next);
+   for (i = 0; i < strlen(P); ++i)
+    {
+      printf("%d ",next[i]);
+    }
    kmp(T, P, next);
    printf("\n");
 
